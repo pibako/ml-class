@@ -26,13 +26,13 @@ sigma = zeros(1, size(X, 2));
 % Hint: You might find the 'mean' and 'std' functions useful.
 %       
 
-
-
-
-
-
-
-
+for feature = 1:size(X, 2)
+  X_norm(:, feature) = X(:, feature) - mean(X(:, feature));
+  mu(1,feature) = mean(X(:, feature));
+  sigma(1,feature) = std(X_norm(:, feature));
+  X_norm(:, feature) = X_norm(:, feature) / sigma(1,feature);
+  % fprintf("std = %f\n", sigma(1,feature)) 
+end
 
 % ============================================================
 
