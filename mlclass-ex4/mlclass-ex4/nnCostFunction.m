@@ -62,11 +62,16 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
-z2 = Theta1*[ones(m,1) X]';
-a2 = sigmoid(z2);
-z3 = Theta2*[ones(1,m); a2];
-a3 = sigmoid(z3);
-h = a3;
+Z2 = Theta1*[ones(m,1) X]';
+A2 = sigmoid(Z2);
+Z3 = Theta2*[ones(1,m); A2];
+A3 = sigmoid(Z3);
+H = A3;
+
+## size(Z2)
+## size(A2)
+## size(Z3)
+## size(A3)
 
 ## y_mul = zeros(m,num_labels);
 ## for i = 1:m
@@ -77,13 +82,30 @@ y_mul = eye(num_labels)(y,:);
 
 regularization = lambda/(2*m) * (sum(sum(Theta1(:,2:end).^2, 2)) + sum(sum(Theta2(:,2:end).^2, 2)));
 
-J = 1/m * sum(sum(-y_mul.*log(h') - (1 - y_mul).*log(1-h'),2)) + regularization;
+J = 1/m * sum(sum(-y_mul.*log(H') - (1 - y_mul).*log(1-H'),2)) + regularization;
 
 % -------------------------------------------------------------
 delta = zeros(3, num_labels);
+## size(y_mul)
 for t = 1:m
-  #delta() = h'(t,:);
+  h = H(:, t);
+  a2 = A2(:, t);
+  delta3 = h - y_mul(t, :)';
+
+  delta2 = Theta2'*delta3 .* ([1;a2].*(1-[1;a2]));
+  delta2 = delta2(2:end);
+
+  Theta1_grad = Theta1_grad + delta2*[1 X(t,:)];
+  Theta2_grad = Theta2_grad + delta3*[1; a2]';
 end
+
+rt1 = Theta1(:,1:end);
+rt2 = Theta2(:,1:end);
+rt1(:, 1) = 0;
+rt2(:, 1) = 0;
+
+Theta1_grad = 1/m * Theta1_grad + lambda/m * rt1;
+Theta2_grad = 1/m * Theta2_grad + lambda/m * rt2;
 
 % =========================================================================
 
