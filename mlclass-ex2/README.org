@@ -1,0 +1,2 @@
+* Programming assignments from original Stanford experiment.
+  http://www.ml-class.org
